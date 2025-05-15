@@ -1,0 +1,154 @@
+name: DynamicDataCroissant
+description: |
+  A dataset of patient clinical cases represented as dynamic graphs with corresponding synthetic text outputs.
+  Each patient case is represented as a graph with nodes (clinical events) and edges (transitions between events).
+  For each graph, there are two types of text outputs: a control version that provides a concise summary,
+  and a sample version that provides a more detailed narrative following the steps in the graph.
+version: 0.1.0
+created: 2025-05-15
+updated: 2025-05-15
+authors:
+  - name: Daneshjou Research Group
+    affiliations:
+      - Stanford University
+license: CC-BY-4.0
+references:
+  - title: "DynamicDataCroissant: Patient Clinical Cases as Dynamic Graphs"
+    url: https://github.com/daneshjou-research/DynamicDataCroissant
+keywords:
+  - healthcare
+  - clinical cases
+  - dynamic graphs
+  - medical text generation
+
+data:
+  - name: patient_graphs
+    description: "Patient clinical cases represented as graph structures"
+    format: json
+    path: patient_graphs/*.json
+    schema:
+      fields:
+        - name: nodes
+          description: "Clinical events in the patient case"
+          type: array
+          items:
+            type: object
+            properties:
+              id: 
+                description: "Unique identifier for the node"
+                type: string
+              label: 
+                description: "Label for the node (e.g., 'Step 1')"
+                type: string
+              customData:
+                description: "Clinical data for this step"
+                type: object
+                properties:
+                  node_id:
+                    description: "Alternative ID for the node"
+                    type: string
+                  node_step_index:
+                    description: "Index of the step in the sequence"
+                    type: integer
+                  content:
+                    description: "Textual description of the clinical event"
+                    type: string
+                  clinical_data:
+                    description: "Structured clinical data"
+                    type: object
+              custom_id:
+                description: "Custom identifier for the node"
+                type: string
+        - name: edges
+          description: "Transitions between clinical events"
+          type: array
+          items:
+            type: object
+            properties:
+              from:
+                description: "Source node ID"
+                type: string
+              to:
+                description: "Target node ID"
+                type: string
+              data:
+                description: "Information about the transition"
+                type: object
+                properties:
+                  edge_id:
+                    description: "Unique identifier for the edge"
+                    type: string
+                  branch_flag:
+                    description: "Flag indicating if this is a branch"
+                    type: boolean
+                  content:
+                    description: "Textual description of the transition"
+                    type: string
+                  transition_event:
+                    description: "Structured data about the transition event"
+                    type: object
+              custom_id:
+                description: "Custom identifier for the edge"
+                type: string
+
+  - name: synthetic_outputs
+    description: "Synthetic text outputs for each patient graph"
+    format: text
+    path: synthetic_outputs/*.txt
+    # No formal schema for text files
+
+  - name: metadata
+    description: "Metadata mapping between patient graphs and synthetic outputs"
+    format: jsonl
+    path: synthetic_outputs/index.jsonl
+    schema:
+      fields:
+        - name: graph_id
+          description: "Identifier for the patient graph"
+          type: string
+        - name: html_file
+          description: "Path to the original HTML file"
+          type: string
+        - name: is_control
+          description: "Flag indicating if this is a control version"
+          type: boolean
+        - name: model
+          description: "Model used to generate the text"
+          type: string
+        - name: node_path_used
+          description: "Path of nodes used for generation (sample only)"
+          type: array
+          items:
+            type: string
+        - name: node_path_true
+          description: "True path of nodes (if available)"
+          type: array
+          items:
+            type: string
+        - name: uid
+          description: "Unique identifier for the output"
+          type: string
+        - name: text_file
+          description: "Name of the text output file"
+          type: string
+
+relationships:
+  - name: graph_to_outputs
+    description: "Relationship between patient graphs and their text outputs"
+    source: metadata
+    keys:
+      - graph_id
+    destination: patient_graphs
+    keys_mapping:
+      - pattern: "graph_{graph_id}.json"
+        replacement: "{graph_id}"
+
+  - name: outputs_to_text
+    description: "Relationship between metadata entries and text output files"
+    source: metadata
+    keys:
+      - text_file
+    destination: synthetic_outputs
+    keys_mapping:
+      - pattern: "{text_file}"
+        replacement: "{text_file}"

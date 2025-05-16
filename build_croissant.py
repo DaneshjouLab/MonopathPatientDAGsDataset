@@ -16,7 +16,7 @@ distribution = [
         description="JSONL files are hosted on the GitHub repository.",
         contained_in=["github-repository"],
         encoding_formats=["application/jsonlines"],
-        includes="dataset/monopath_patient_dags_data.jsonl",
+        includes="dataset/dynamic_data.jsonl",
     ),
 ]
 record_sets = [

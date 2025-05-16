@@ -2,3 +2,7 @@
 # pixi environments
 .pixi
 *.egg-info
+
+
+# Misc
+**/.DS_Store

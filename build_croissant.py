@@ -6,7 +6,7 @@ distribution = [
         id="github-repository",
         name="github-repository",
         description="MonopathPatientDAGs repository on GitHub.",
-        content_url="https://github.com/shloknatarajan/MonopathPatientDAGsDataset",
+        content_url="https://github.com/DaneshjouLab/MonopathPatientDAGsDataset",
         encoding_formats=["git+https"],
         sha256="main",
     ),

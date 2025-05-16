@@ -1,253 +1,202 @@
 {
-  "@context": [
-    "https://schema.org",
-    {
-      "croissant": "https://mlcommons.org/croissant/",
-      "schema": "https://schema.org/",
-      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-      "xsd": "http://www.w3.org/2001/XMLSchema#"
-    }
-  ],
-  "@type": "croissant:Dataset",
-  "name": "DynamicDataCroissant",
-  "description": "A dataset containing patient medical history graphs and synthetic text outputs for medical case studies. The dataset includes structured patient medical information organized as directed graphs, with both control and sample synthetic outputs generated for each patient case.",
-  "license": "https://creativecommons.org/licenses/by/4.0/",
-  "creator": {
-    "@type": "Person",
-    "name": "DaneshjouLab",
-    "url": "https://github.com/DaneshjouLab"
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "rai": "http://mlcommons.org/croissant/RAI/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "examples": {
+      "@id": "cr:examples",
+      "@type": "@json"
+    },
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
   },
-  "dateCreated": "2024-05-15",
-  "version": "1.0.0",
-  "url": "https://github.com/DaneshjouLab/DynamicDataCroissant",
-  "keywords": [
-    "medical", 
-    "graphs", 
-    "clinical", 
-    "patient data", 
-    "synthetic text", 
-    "healthcare", 
-    "case studies"
-  ],
+  "@type": "sc:Dataset",
+  "name": "MonopathPatientDAGs",
+  "description": "We present a modular framework that transforms free-text case reports into Monopath directed acyclic graphs (DAGs) that represent temporally orderedand semantically grounded patient trajectories. DAGs are a natural fit for model-ingclinical narratives as they encode time-ordered clinical states and transitions,supporting branching and causal reasoning. These graphs serve as generative tem-platesfor clinically grounded synthetic data and support downstream tasks such aspatient similarity retrieval and trajectory-aware data augmentation.",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "url": "https://github.com/DaneshjouLab/DynamicData/",
   "distribution": [
     {
-      "@type": "croissant:Distribution",
-      "contentUrl": "./dataset/patient_graphs/",
-      "encodingFormat": "application/json",
-      "description": "Patient graph files in JSON format"
+      "@type": "cr:FileObject",
+      "@id": "github-repository",
+      "name": "github-repository",
+      "description": "MonopathPatientDAGs repository on GitHub.",
+      "contentUrl": "https://github.com/shloknatarajan/DynamicDataCroissant",
+      "encodingFormat": "git+https",
+      "sha256": "main"
     },
     {
-      "@type": "croissant:Distribution",
-      "contentUrl": "./dataset/synthetic_outputs/",
-      "encodingFormat": "text/plain",
-      "description": "Generated text outputs in TXT format"
-    },
-    {
-      "@type": "croissant:Distribution",
-      "contentUrl": "./dataset/synthetic_outputs/index.jsonl",
-      "encodingFormat": "application/jsonl",
-      "description": "Index file that maps patient graphs to synthetic outputs"
+      "@type": "cr:FileSet",
+      "@id": "jsonl-files",
+      "name": "jsonl-files",
+      "description": "JSONL files are hosted on the GitHub repository.",
+      "containedIn": {
+        "@id": "github-repository"
+      },
+      "encodingFormat": "application/jsonlines",
+      "includes": "dataset/dynamic_data.jsonl"
     }
   ],
-  "isAccessibleForFree": true,
-  "citation": "DaneshjouLab. (2024). DynamicData: A collection of dynamic medical patient graphs with synthetic text outputs.",
   "recordSet": [
     {
-      "@type": "croissant:RecordSet",
-      "name": "patient_graphs",
-      "description": "Patient medical history represented as directed graphs",
-      "dataType": "croissant:JsonSchema",
-      "jsonSchema": {
-        "type": "object",
-        "properties": {
-          "nodes": {
-            "type": "array",
-            "description": "Nodes representing medical events in patient history",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {"type": "string"},
-                "label": {"type": "string"},
-                "customData": {
-                  "type": "object",
-                  "properties": {
-                    "node_id": {"type": "string"},
-                    "node_step_index": {"type": "integer"},
-                    "content": {"type": "string"},
-                    "clinical_data": {"type": "object"}
-                  }
-                },
-                "custom_id": {"type": "string"}
-              }
+      "@type": "cr:RecordSet",
+      "@id": "jsonl",
+      "name": "jsonl",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "jsonl/graph_id",
+          "name": "graph_id",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "jsonl-files"
+            },
+            "extract": {
+              "column": "graph_id"
             }
-          },
-          "edges": {
-            "type": "array",
-            "description": "Edges representing transitions between medical events",
-            "items": {
-              "type": "object",
-              "properties": {
-                "from": {"type": "string"},
-                "to": {"type": "string"},
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "edge_id": {"type": "string"},
-                    "branch_flag": {"type": "boolean"},
-                    "content": {"type": "string"},
-                    "transition_event": {"type": "object"}
-                  }
-                },
-                "custom_id": {"type": "string"}
-              }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "jsonl/is_control",
+          "name": "is_control",
+          "description": "Whether the graph is a control graph.",
+          "dataType": "sc:Boolean",
+          "source": {
+            "fileSet": {
+              "@id": "jsonl-files"
+            },
+            "extract": {
+              "column": "is_control"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "jsonl/synthetic_output",
+          "name": "synthetic_output",
+          "description": "The synthetic output history.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "jsonl-files"
+            },
+            "extract": {
+              "column": "synthetic_output"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "jsonl/model",
+          "name": "model",
+          "description": "The model used to generate the synthetic output.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "jsonl-files"
+            },
+            "extract": {
+              "column": "model"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "jsonl/node_path_used",
+          "name": "node_path_used",
+          "description": "Node path in string format (needs to be parsed to array)",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "jsonl-files"
+            },
+            "extract": {
+              "column": "node_path_used"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "jsonl/node_path_true",
+          "name": "node_path_true",
+          "description": "The longest path of the directed acyclic graph",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "jsonl-files"
+            },
+            "extract": {
+              "column": "node_path_used"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "jsonl/uid",
+          "name": "uid",
+          "description": "uid",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "jsonl-files"
+            },
+            "extract": {
+              "column": "uid"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "jsonl/graph_json",
+          "name": "graph_json",
+          "description": "JSON containing the history node/edges. Stored as a string but can be parsed",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "jsonl-files"
+            },
+            "extract": {
+              "column": "graph_json"
             }
           }
         }
-      },
-      "distribution": {
-        "@type": "croissant:FileObject",
-        "contentUrl": "./dataset/patient_graphs/",
-        "pattern": "graph_*.json"
-      }
-    },
-    {
-      "@type": "croissant:RecordSet",
-      "name": "synthetic_outputs",
-      "description": "AI-generated text outputs based on patient graphs",
-      "dataType": "xsd:string",
-      "distribution": {
-        "@type": "croissant:FileObject",
-        "contentUrl": "./dataset/synthetic_outputs/",
-        "pattern": "graph_*__*.txt"
-      }
-    },
-    {
-      "@type": "croissant:RecordSet",
-      "name": "index",
-      "description": "Mapping between patient graphs and synthetic outputs",
-      "dataType": "croissant:JsonSchema",
-      "jsonSchema": {
-        "type": "object",
-        "properties": {
-          "graph_id": {"type": "string"},
-          "is_control": {"type": "boolean"},
-          "model": {"type": "string"},
-          "node_path_used": {
-            "type": ["array", "null"],
-            "items": {"type": "string"}
-          },
-          "node_path_true": {"type": ["string", "null"]},
-          "uid": {"type": "string"},
-          "text_file": {"type": "string"}
-        }
-      },
-      "distribution": {
-        "@type": "croissant:FileObject",
-        "contentUrl": "./dataset/synthetic_outputs/index.jsonl"
-      }
-    }
-  ],
-  "field": [
-    {
-      "@type": "croissant:Field",
-      "name": "graph_id",
-      "description": "Unique identifier for each patient graph",
-      "dataType": "xsd:string",
-      "recordSet": "index"
-    },
-    {
-      "@type": "croissant:Field",
-      "name": "is_control",
-      "description": "Boolean flag indicating whether the output is a control sample",
-      "dataType": "xsd:boolean",
-      "recordSet": "index"
-    },
-    {
-      "@type": "croissant:Field",
-      "name": "model",
-      "description": "AI model used to generate the synthetic output",
-      "dataType": "xsd:string",
-      "recordSet": "index"
-    },
-    {
-      "@type": "croissant:Field",
-      "name": "node_path_used",
-      "description": "Path through the nodes used for generating the sample output",
-      "dataType": "xsd:string",
-      "recordSet": "index",
-      "repeated": true
-    },
-    {
-      "@type": "croissant:Field",
-      "name": "uid",
-      "description": "Unique identifier for each synthetic output",
-      "dataType": "xsd:string",
-      "recordSet": "index"
-    },
-    {
-      "@type": "croissant:Field",
-      "name": "text_file",
-      "description": "Filename of the synthetic output text file",
-      "dataType": "xsd:string",
-      "recordSet": "index"
-    }
-  ],
-  "relationship": [
-    {
-      "@type": "croissant:Relationship",
-      "name": "graph_to_outputs",
-      "description": "Relationship between patient graphs and their synthetic outputs",
-      "fields": [
-        {
-          "description": "Patient graph ID links to synthetic outputs",
-          "sourceName": "graph_id",
-          "destinationName": "graph_id",
-          "sourceDataType": "xsd:string",
-          "destinationDataType": "xsd:string",
-          "sourceRecordSet": "patient_graphs",
-          "destinationRecordSet": "index"
-        }
       ]
     }
-  ],
-  "croissant:knowledgeGraph": {
-    "@type": "croissant:KnowledgeGraph",
-    "name": "Medical Knowledge Graph",
-    "description": "Graph structure representing patient clinical progression",
-    "field": [
-      {
-        "@type": "croissant:Field",
-        "name": "node_id",
-        "description": "Unique identifier for a clinical event node",
-        "dataType": "xsd:string"
-      },
-      {
-        "@type": "croissant:Field",
-        "name": "node_content",
-        "description": "Textual description of the clinical event",
-        "dataType": "xsd:string"
-      },
-      {
-        "@type": "croissant:Field",
-        "name": "edge_content",
-        "description": "Description of the transition between clinical events",
-        "dataType": "xsd:string"
-      }
-    ],
-    "nodeSet": {
-      "@type": "croissant:NodeSet",
-      "name": "ClinicalEvent",
-      "description": "Clinical events in patient medical history",
-      "idField": "node_id",
-      "labelField": "node_content"
-    },
-    "edgeSet": {
-      "@type": "croissant:EdgeSet",
-      "name": "ClinicalTransition",
-      "description": "Transitions between clinical events",
-      "labelField": "edge_content",
-      "sourceNodeSet": "ClinicalEvent",
-      "destinationNodeSet": "ClinicalEvent"
-    }
-  }
+  ]
 }

@@ -55,7 +55,7 @@
       "@id": "github-repository",
       "name": "github-repository",
       "description": "MonopathPatientDAGs repository on GitHub.",
-      "contentUrl": "https://github.com/shloknatarajan/DynamicDataCroissant",
+      "contentUrl": "https://github.com/DaneshjouLab/MonopathPatientDAGsDataset",
       "encodingFormat": "git+https",
       "sha256": "main"
     },
@@ -68,7 +68,7 @@
         "@id": "github-repository"
       },
       "encodingFormat": "application/jsonlines",
-      "includes": "dataset/dynamic_data.jsonl"
+      "includes": "dataset/monopath_patient_dags_data.jsonl"
     }
   ],
   "recordSet": [
